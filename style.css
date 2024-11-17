@@ -1,12 +1,22 @@
 body {
     background-color: rgb(24, 9, 94);
-    font-family: "Bree Serif", serif;
 }
 
 h1 {
     color: rgb(22, 110, 198);
+    font-family: "Bree Serif", serif;
 }
 
 h2 {
-    color: rgb(198, 145, 22); 
+    color: rgb(76, 14, 142); 
+    font-family: "Roboto Slab", serif;
+}
+h3 {
+    color: rgb(174, 198, 22);
+    font-family: "Spicy Rice", serif;
+}
+
+h4 {
+    color: rgb(198, 22, 40); 
+    font-family: "Bangers", system-ui;
 }
