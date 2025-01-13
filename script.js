@@ -4,5 +4,5 @@ const movieTwo = "Hell Watcher";
 console.log(movieTwo);
 const movieThree = "Dog Man";
 console.log(movieThree);
-const movieFour = "Dog Man";
-console.log(movieThree, 5 * 4, "Great job, Philler!");
+const movieFour = "Dog Man II";
+console.log(movieThree, 5 * 4, "Great job, Phillie");
