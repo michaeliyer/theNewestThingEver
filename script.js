@@ -5,4 +5,4 @@ console.log(movieTwo);
 const movieThree = "Dog Man";
 console.log(movieThree);
 const movieFour = "Dog Man II";
-console.log(movieThree, 5 * 4, "Great job, Phillie");
+console.log(movieThree, 5 * 4, "Great job, Phillie", movieOne + " and " + movieTwo + " are pretty cool flicks, man!");
