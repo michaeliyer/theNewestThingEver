@@ -1,22 +1,249 @@
 body {
-    background-color: rgb(24, 9, 94);
+  background-color: rgb(24, 9, 94);
+  overflow-x: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  padding: 50px 20px; /* Add padding to create more clickable empty space */
+  min-height: 100vh; /* Ensure body takes full height */
+  box-sizing: border-box;
+}
+
+/* Wild background animations */
+body.wild-colors {
+  animation: wildGradient 3s ease-in-out;
+  transition: none !important; /* Disable transition during animation */
+}
+
+@keyframes wildGradient {
+  0% {
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+    background-size: 400% 400%;
+  }
+  12.5% {
+    background: linear-gradient(90deg, #ff9ff3, #54a0ff, #5f27cd, #00d2d3);
+    background-size: 400% 400%;
+  }
+  25% {
+    background: linear-gradient(135deg, #ff6348, #2ed573, #3742fa, #f368e0);
+    background-size: 400% 400%;
+  }
+  37.5% {
+    background: linear-gradient(180deg, #f368e0, #ffa502, #ff4757, #2ecc71);
+    background-size: 400% 400%;
+  }
+  50% {
+    background: linear-gradient(225deg, #2ecc71, #3498db, #9b59b6, #ff6b6b);
+    background-size: 400% 400%;
+  }
+  62.5% {
+    background: linear-gradient(270deg, #ff3838, #f39c12, #e74c3c, #1abc9c);
+    background-size: 400% 400%;
+  }
+  75% {
+    background: linear-gradient(315deg, #1abc9c, #3498db, #9b59b6, #e67e22);
+    background-size: 400% 400%;
+  }
+  87.5% {
+    background: linear-gradient(360deg, #e67e22, #e74c3c, #8e44ad, #ff6b6b);
+    background-size: 400% 400%;
+  }
+  100% {
+    background: var(--random-end-color, rgb(24, 9, 94));
+    background-size: 100% 100%;
+  }
+}
+
+/* Floating particles for background effect */
+.bg-particle {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+  animation: floatParticle 4s ease-out forwards;
+}
+
+@keyframes floatParticle {
+  0% {
+    transform: translate(0, 0) scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(var(--particle-x, 0), var(--particle-y, 0)) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(var(--particle-x, 0), var(--particle-y, 0)) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Pulse effect for body */
+body.pulsing {
+  animation: bodyPulse 0.5s ease-out;
+}
+
+@keyframes bodyPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+h1,
+h2,
+h3,
+h4 {
+  cursor: pointer;
+  transition: transform 0.2s ease, top 1s ease, left 1s ease;
+  user-select: none;
+  position: absolute; /* Changed to absolute for repositioning */
+  margin: 10px 0; /* Reduce margins to create more empty space */
+  padding: 5px 0; /* Minimal padding */
+  width: auto;
+  max-width: calc(100vw - 40px); /* Prevent overflow */
+}
+
+/* Repositioning animation */
+h1.repositioning,
+h2.repositioning,
+h3.repositioning,
+h4.repositioning {
+  transition: top 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+    left 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), transform 1.5s ease;
+  z-index: 100;
+}
+
+/* Initial positioning for headings */
+h1:nth-of-type(1) {
+  top: 50px;
+  left: 20px;
+}
+h1:nth-of-type(2) {
+  top: 100px;
+  left: 20px;
+}
+h2:nth-of-type(1) {
+  top: 150px;
+  left: 20px;
+}
+h3:nth-of-type(1) {
+  top: 200px;
+  left: 20px;
+}
+h4:nth-of-type(1) {
+  top: 250px;
+  left: 20px;
+}
+
+h1:hover,
+h2:hover,
+h3:hover,
+h4:hover {
+  transform: scale(1.05);
 }
 
 h1 {
-    color: rgb(76, 143, 209);
-    font-family: "Bree Serif", serif;
+  color: rgb(76, 143, 209);
+  font-family: "Bree Serif", serif;
 }
 
 h2 {
-    color: rgb(76, 14, 142); 
-    font-family: "Roboto Slab", serif;
+  color: rgb(76, 14, 142);
+  font-family: "Roboto Slab", serif;
 }
+
 h3 {
-    color: rgb(174, 198, 22);
-    font-family: "Spicy Rice", serif;
+  color: rgb(174, 198, 22);
+  font-family: "Spicy Rice", serif;
 }
 
 h4 {
-    color: rgb(198, 22, 40); 
-    font-family: "Bangers", system-ui;
+  color: rgb(198, 22, 40);
+  font-family: "Bangers", system-ui;
+}
+
+/* Letter animation styles */
+.letter {
+  display: inline-block;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.letter.exploding {
+  animation: explode 0.8s ease-out forwards;
+}
+
+.letter.reforming {
+  animation: reform 0.8s ease-out forwards;
+}
+
+@keyframes explode {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(var(--random-x, 0), var(--random-y, 0))
+      rotate(var(--random-rotation, 0)) scale(0.3);
+    opacity: 0;
+  }
+}
+
+@keyframes reform {
+  0% {
+    transform: translate(var(--random-x, 0), var(--random-y, 0))
+      rotate(var(--random-rotation, 0)) scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Sparkle effect */
+.sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: radial-gradient(circle, #fff, transparent);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sparkle 1s ease-out forwards;
+}
+
+@keyframes sparkle {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1) rotate(180deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Glow effect for active elements */
+.glowing {
+  text-shadow: 0 0 10px currentColor, 0 0 20px currentColor,
+    0 0 30px currentColor;
 }
