@@ -34,6 +34,9 @@ class LetterExplosion {
         this.explodeAndReform(heading);
       });
     });
+
+    // Start subtle background animations
+    this.startSubtleAnimations();
   }
 
   wrapLetters(element) {
@@ -74,11 +77,19 @@ class LetterExplosion {
         letter.classList.add("exploding");
       }, index * 50);
 
-      // Start reform with new color
+      // Start reform with new color and flickering
       setTimeout(() => {
         letter.classList.remove("exploding");
         letter.classList.add("reforming");
-        letter.style.color = randomColors[index % randomColors.length];
+
+        // Truly random color assignment instead of predictable cycling
+        const randomColorIndex = Math.floor(
+          Math.random() * randomColors.length
+        );
+        letter.style.color = randomColors[randomColorIndex];
+
+        // Add flickering effect during reformation
+        this.addFlickerEffect(letter, randomColors);
 
         // Remove animation classes after animation completes
         setTimeout(() => {
@@ -140,6 +151,111 @@ class LetterExplosion {
     return this.colorPalettes[
       Math.floor(Math.random() * this.colorPalettes.length)
     ];
+  }
+
+  addFlickerEffect(letter, colorPalette) {
+    // Create rapid color changes during reformation
+    const flickerCount = 3 + Math.floor(Math.random() * 4); // 3-6 flickers
+    const flickerInterval = 800 / flickerCount; // Spread over 800ms reformation time
+
+    for (let i = 0; i < flickerCount; i++) {
+      setTimeout(() => {
+        const randomColor =
+          colorPalette[Math.floor(Math.random() * colorPalette.length)];
+        letter.style.color = randomColor;
+
+        // Add brief intensity flash
+        letter.style.textShadow = `0 0 8px ${randomColor}`;
+        setTimeout(() => {
+          letter.style.textShadow = "";
+        }, flickerInterval / 3);
+      }, i * flickerInterval);
+    }
+  }
+
+  startSubtleAnimations() {
+    // Add subtle default flickering and micro-explosions
+    setInterval(() => {
+      const allLetters = document.querySelectorAll(".letter");
+      if (allLetters.length === 0) return;
+
+      // Random letter gets a subtle effect
+      if (Math.random() < 0.05) {
+        // 5% chance every interval
+        const randomLetter =
+          allLetters[Math.floor(Math.random() * allLetters.length)];
+        this.addSubtleFlicker(randomLetter);
+      }
+
+      // Occasionally trigger a mini-sparkle burst
+      if (Math.random() < 0.02) {
+        // 2% chance
+        const randomElement =
+          document.querySelectorAll("h1, h2, h3, h4")[
+            Math.floor(Math.random() * 5)
+          ];
+        if (randomElement) {
+          this.addMiniSparkles(randomElement);
+        }
+      }
+    }, 2000); // Check every 2 seconds
+  }
+
+  addSubtleFlicker(letter) {
+    const originalColor = letter.style.color || getComputedStyle(letter).color;
+    const brightColors = [
+      "#ff6b6b",
+      "#4ecdc4",
+      "#45b7d1",
+      "#96ceb4",
+      "#feca57",
+    ];
+    const flickerColor =
+      brightColors[Math.floor(Math.random() * brightColors.length)];
+
+    // Brief color flash
+    letter.style.color = flickerColor;
+    letter.style.textShadow = `0 0 6px ${flickerColor}`;
+
+    setTimeout(() => {
+      letter.style.color = originalColor;
+      letter.style.textShadow = "";
+    }, 150 + Math.random() * 200); // 150-350ms flicker
+  }
+
+  addMiniSparkles(element) {
+    const rect = element.getBoundingClientRect();
+    const sparkleCount = 3 + Math.floor(Math.random() * 4); // 3-6 mini sparkles
+
+    for (let i = 0; i < sparkleCount; i++) {
+      const sparkle = document.createElement("div");
+      sparkle.className = "mini-sparkle";
+
+      const x = Math.random() * rect.width;
+      const y = Math.random() * rect.height;
+
+      sparkle.style.cssText = `
+        position: absolute;
+        left: ${x}px;
+        top: ${y}px;
+        width: 2px;
+        height: 2px;
+        background: #fff;
+        border-radius: 50%;
+        pointer-events: none;
+        animation: miniSparkle 1s ease-out forwards;
+        animation-delay: ${Math.random() * 0.3}s;
+      `;
+
+      element.appendChild(sparkle);
+
+      // Remove sparkle after animation
+      setTimeout(() => {
+        if (sparkle.parentNode) {
+          sparkle.parentNode.removeChild(sparkle);
+        }
+      }, 1300);
+    }
   }
 
   createSparkles(element) {

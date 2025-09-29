@@ -242,6 +242,35 @@ h4 {
   }
 }
 
+/* Mini sparkle animation for subtle effects */
+@keyframes miniSparkle {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 1;
+    background: #fff;
+  }
+  25% {
+    transform: scale(1.5) rotate(90deg);
+    opacity: 0.9;
+    background: #feca57;
+  }
+  50% {
+    transform: scale(1) rotate(180deg);
+    opacity: 0.7;
+    background: #ff6b6b;
+  }
+  75% {
+    transform: scale(1.2) rotate(270deg);
+    opacity: 0.5;
+    background: #4ecdc4;
+  }
+  100% {
+    transform: scale(0) rotate(360deg);
+    opacity: 0;
+    background: #45b7d1;
+  }
+}
+
 /* Glow effect for active elements */
 .glowing {
   text-shadow: 0 0 10px currentColor, 0 0 20px currentColor,
