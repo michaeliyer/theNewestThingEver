@@ -59,43 +59,62 @@ class LetterExplosion {
     // Add glowing effect to the element
     element.classList.add("glowing");
 
-    // Create sparkles
-    this.createSparkles(element);
+    // Create enhanced sparkles with more particles
+    this.createEnhancedSparkles(element);
+
+    // Add screen shake for letter explosions too
+    this.addLetterScreenShake();
 
     letters.forEach((letter, index) => {
-      // Set random animation properties
-      const randomX = (Math.random() - 0.5) * 400; // -200 to 200px
-      const randomY = (Math.random() - 0.5) * 400; // -200 to 200px
-      const randomRotation = (Math.random() - 0.5) * 720; // -360 to 360 degrees
+      // Much more dramatic explosion properties
+      const randomX = (Math.random() - 0.5) * 800; // Doubled from 400 to 800px
+      const randomY = (Math.random() - 0.5) * 800; // Much bigger spread
+      const randomRotation = (Math.random() - 0.5) * 1440; // Doubled rotation: -720 to 720 degrees
+
+      // Dynamic font size changes during explosion
+      const originalSize = parseFloat(getComputedStyle(letter).fontSize) || 16;
+      const explosionSize = originalSize * (1.5 + Math.random() * 2); // 1.5x to 3.5x bigger
+      const finalSize = originalSize * (0.8 + Math.random() * 0.6); // 0.8x to 1.4x final size
 
       letter.style.setProperty("--random-x", `${randomX}px`);
       letter.style.setProperty("--random-y", `${randomY}px`);
       letter.style.setProperty("--random-rotation", `${randomRotation}deg`);
+      letter.style.setProperty("--explosion-size", `${explosionSize}px`);
+      letter.style.setProperty("--final-size", `${finalSize}px`);
 
-      // Start explosion
+      // Add dramatic glow during explosion
+      letter.style.setProperty(
+        "--glow-color",
+        randomColors[Math.floor(Math.random() * randomColors.length)]
+      );
+
+      // Start explosion with staggered timing
       setTimeout(() => {
         letter.classList.add("exploding");
-      }, index * 50);
+        // Add individual letter shake
+        this.addLetterShake(letter);
+      }, index * 30); // Faster stagger for more chaos
 
-      // Start reform with new color and flickering
+      // Start reform with new color and enhanced flickering
       setTimeout(() => {
         letter.classList.remove("exploding");
         letter.classList.add("reforming");
 
-        // Truly random color assignment instead of predictable cycling
+        // Truly random color assignment
         const randomColorIndex = Math.floor(
           Math.random() * randomColors.length
         );
         letter.style.color = randomColors[randomColorIndex];
+        letter.style.fontSize = `${finalSize}px`;
 
-        // Add flickering effect during reformation
-        this.addFlickerEffect(letter, randomColors);
+        // Add enhanced flickering effect during reformation
+        this.addEnhancedFlickerEffect(letter, randomColors);
 
         // Remove animation classes after animation completes
         setTimeout(() => {
           letter.classList.remove("reforming");
-        }, 800);
-      }, 800 + index * 50);
+        }, 1000); // Slightly longer for more dramatic effect
+      }, 1000 + index * 40); // Longer explosion time
     });
 
     // Remove glowing effect and reposition element
@@ -103,7 +122,7 @@ class LetterExplosion {
       element.classList.remove("glowing");
       // Reposition the entire element after letter animation completes
       this.repositionElement(element);
-    }, 1600);
+    }, 2200); // Extended timing for longer animations
   }
 
   repositionElement(element) {
@@ -171,6 +190,93 @@ class LetterExplosion {
         }, flickerInterval / 3);
       }, i * flickerInterval);
     }
+  }
+
+  addEnhancedFlickerEffect(letter, colorPalette) {
+    // Much more dramatic flickering with size and glow changes
+    const flickerCount = 5 + Math.floor(Math.random() * 6); // 5-10 flickers
+    const flickerInterval = 1000 / flickerCount; // Spread over 1000ms reformation time
+
+    for (let i = 0; i < flickerCount; i++) {
+      setTimeout(() => {
+        const randomColor =
+          colorPalette[Math.floor(Math.random() * colorPalette.length)];
+        letter.style.color = randomColor;
+
+        // Dramatic glow and size effects
+        const glowIntensity = 15 + Math.random() * 20; // 15-35px glow
+        const sizeMultiplier = 0.8 + Math.random() * 0.6; // 0.8x to 1.4x size variation
+        const currentSize = parseFloat(letter.style.fontSize) || 16;
+
+        letter.style.textShadow = `
+          0 0 ${glowIntensity}px ${randomColor},
+          0 0 ${glowIntensity * 1.5}px ${randomColor},
+          0 0 ${glowIntensity * 2}px ${randomColor}
+        `;
+        letter.style.fontSize = `${currentSize * sizeMultiplier}px`;
+
+        setTimeout(() => {
+          letter.style.textShadow = "";
+          letter.style.fontSize = `${currentSize}px`;
+        }, flickerInterval / 2);
+      }, i * flickerInterval);
+    }
+  }
+
+  createEnhancedSparkles(element) {
+    const rect = element.getBoundingClientRect();
+    const sparkleCount = 30; // Doubled from 15 to 30
+
+    for (let i = 0; i < sparkleCount; i++) {
+      const sparkle = document.createElement("div");
+      sparkle.className = "enhanced-sparkle";
+
+      const x = Math.random() * rect.width;
+      const y = Math.random() * rect.height;
+      const size = 2 + Math.random() * 6; // Variable sizes 2-8px
+      const duration = 0.8 + Math.random() * 0.8; // 0.8-1.6s duration
+
+      sparkle.style.cssText = `
+        position: absolute;
+        left: ${x}px;
+        top: ${y}px;
+        width: ${size}px;
+        height: ${size}px;
+        background: radial-gradient(circle, #fff, transparent);
+        border-radius: 50%;
+        pointer-events: none;
+        animation: enhancedSparkle ${duration}s ease-out forwards;
+        animation-delay: ${Math.random() * 0.5}s;
+        box-shadow: 0 0 ${size * 2}px rgba(255, 255, 255, 0.8);
+      `;
+
+      element.appendChild(sparkle);
+
+      // Remove sparkle after animation
+      setTimeout(() => {
+        if (sparkle.parentNode) {
+          sparkle.parentNode.removeChild(sparkle);
+        }
+      }, (duration + 0.5) * 1000);
+    }
+  }
+
+  addLetterScreenShake() {
+    // Lighter screen shake for letter explosions
+    document.body.style.animation = "letterShake 0.4s ease-out";
+
+    setTimeout(() => {
+      document.body.style.animation = "";
+    }, 400);
+  }
+
+  addLetterShake(letter) {
+    // Individual letter shake during explosion
+    letter.style.animation = "individualLetterShake 0.3s ease-out";
+
+    setTimeout(() => {
+      letter.style.animation = "";
+    }, 300);
   }
 
   startSubtleAnimations() {
@@ -508,15 +614,15 @@ class BackgroundEffects {
   }
 
   createBackgroundParticles(centerX, centerY) {
-    const particleCount = 25;
+    const particleCount = 60; // Doubled from 25 to 60!
 
     for (let i = 0; i < particleCount; i++) {
       const particle = document.createElement("div");
       particle.className = "bg-particle";
 
-      // Random direction and distance
-      const angle = (Math.PI * 2 * i) / particleCount + Math.random() * 0.5;
-      const distance = 100 + Math.random() * 200;
+      // More dramatic direction and distance
+      const angle = (Math.PI * 2 * i) / particleCount + Math.random() * 1.0;
+      const distance = 150 + Math.random() * 400; // Increased from 100-300 to 150-550
       const x = Math.cos(angle) * distance;
       const y = Math.sin(angle) * distance;
 
@@ -528,16 +634,31 @@ class BackgroundEffects {
       particle.style.setProperty("--particle-x", `${x}px`);
       particle.style.setProperty("--particle-y", `${y}px`);
 
-      // Random colors for particles
+      // More vibrant colors with higher opacity
       const colors = [
-        "rgba(255, 107, 107, 0.8)",
-        "rgba(78, 205, 196, 0.8)",
-        "rgba(69, 183, 209, 0.8)",
-        "rgba(150, 206, 180, 0.8)",
-        "rgba(254, 202, 87, 0.8)",
+        "rgba(255, 107, 107, 0.95)",
+        "rgba(78, 205, 196, 0.95)",
+        "rgba(69, 183, 209, 0.95)",
+        "rgba(150, 206, 180, 0.95)",
+        "rgba(254, 202, 87, 0.95)",
+        "rgba(255, 0, 255, 0.9)", // Bright magenta
+        "rgba(0, 255, 255, 0.9)", // Bright cyan
+        "rgba(255, 255, 0, 0.9)", // Bright yellow
+        "rgba(255, 0, 128, 0.9)", // Hot pink
+        "rgba(128, 255, 0, 0.9)", // Lime green
       ];
       particle.style.background =
         colors[Math.floor(Math.random() * colors.length)];
+
+      // Random particle sizes for more variety
+      const size = 4 + Math.random() * 8; // 4-12px instead of fixed 6px
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+
+      // Add glow effect to particles
+      particle.style.boxShadow = `0 0 ${size * 2}px ${
+        particle.style.background
+      }`;
 
       document.body.appendChild(particle);
 
@@ -546,45 +667,103 @@ class BackgroundEffects {
         if (particle.parentNode) {
           particle.parentNode.removeChild(particle);
         }
-      }, 4000);
+      }, 5000); // Increased duration from 4s to 5s
+    }
+
+    // Add additional explosion rings for more drama
+    this.createExplosionRings(centerX, centerY);
+
+    // Add screen shake effect
+    this.addScreenShake();
+  }
+
+  createExplosionRings(centerX, centerY) {
+    // Create 3 expanding rings for dramatic effect
+    for (let ring = 0; ring < 3; ring++) {
+      const ringElement = document.createElement("div");
+      ringElement.className = "explosion-ring";
+
+      ringElement.style.cssText = `
+        position: fixed;
+        left: ${centerX}px;
+        top: ${centerY}px;
+        width: 0px;
+        height: 0px;
+        border: 3px solid rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        animation: explosionRing ${1.5 + ring * 0.3}s ease-out forwards;
+        animation-delay: ${ring * 0.2}s;
+      `;
+
+      document.body.appendChild(ringElement);
+
+      // Remove ring after animation
+      setTimeout(() => {
+        if (ringElement.parentNode) {
+          ringElement.parentNode.removeChild(ringElement);
+        }
+      }, 2500 + ring * 300);
     }
   }
 
-  createScreenFlash() {
-    const flash = document.createElement("div");
-    flash.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 9999;
-      animation: screenFlash 0.5s ease-out forwards;
-    `;
-
-    // Add flash animation
-    const style = document.createElement("style");
-    style.textContent = `
-      @keyframes screenFlash {
-        0% { opacity: 0; }
-        50% { opacity: 1; }
-        100% { opacity: 0; }
-      }
-    `;
-    document.head.appendChild(style);
-
-    document.body.appendChild(flash);
+  addScreenShake() {
+    // Add dramatic screen shake effect
+    document.body.style.animation = "screenShake 0.6s ease-out";
 
     setTimeout(() => {
-      if (flash.parentNode) {
-        flash.parentNode.removeChild(flash);
-      }
-      if (style.parentNode) {
-        style.parentNode.removeChild(style);
-      }
-    }, 500);
+      document.body.style.animation = "";
+    }, 600);
+  }
+
+  createScreenFlash() {
+    // Create multiple flash layers for more intensity
+    for (let i = 0; i < 3; i++) {
+      const flash = document.createElement("div");
+      const intensity = 0.4 - i * 0.1; // Decreasing intensity for layers
+      const delay = i * 100; // Stagger the flashes
+
+      flash.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: radial-gradient(circle, rgba(255,255,255,${intensity}) 0%, rgba(255,255,255,${
+        intensity * 0.3
+      }) 30%, transparent 70%);
+        pointer-events: none;
+        z-index: 9999;
+        animation: dramaticFlash ${0.8 + i * 0.2}s ease-out forwards;
+        animation-delay: ${delay}ms;
+      `;
+
+      document.body.appendChild(flash);
+
+      setTimeout(() => {
+        if (flash.parentNode) {
+          flash.parentNode.removeChild(flash);
+        }
+      }, 1200 + delay);
+    }
+
+    // Add flash animation if not already added
+    if (!document.getElementById("dramaticFlashStyle")) {
+      const style = document.createElement("style");
+      style.id = "dramaticFlashStyle";
+      style.textContent = `
+        @keyframes dramaticFlash {
+          0% { opacity: 0; transform: scale(0.8); }
+          20% { opacity: 1; transform: scale(1.1); }
+          40% { opacity: 0.8; transform: scale(1.05); }
+          60% { opacity: 1; transform: scale(1.02); }
+          80% { opacity: 0.6; transform: scale(1.01); }
+          100% { opacity: 0; transform: scale(1); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
   }
 }
 
