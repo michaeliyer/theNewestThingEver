@@ -100,6 +100,21 @@ class LetterExplosion {
         letter.classList.remove("exploding");
         letter.classList.add("reforming");
 
+        // Generate completely arbitrary reformation start positions
+        const reformStartX = (Math.random() - 0.5) * 600; // -300 to 300px from final position
+        const reformStartY = (Math.random() - 0.5) * 600; // -300 to 300px from final position
+        const reformStartRotation = (Math.random() - 0.5) * 1080; // -540 to 540 degrees
+        const reformStartScale = 0.1 + Math.random() * 0.4; // 0.1 to 0.5 scale
+
+        // Set arbitrary reformation start properties
+        letter.style.setProperty("--reform-start-x", `${reformStartX}px`);
+        letter.style.setProperty("--reform-start-y", `${reformStartY}px`);
+        letter.style.setProperty(
+          "--reform-start-rotation",
+          `${reformStartRotation}deg`
+        );
+        letter.style.setProperty("--reform-start-scale", reformStartScale);
+
         // Truly random color assignment
         const randomColorIndex = Math.floor(
           Math.random() * randomColors.length
@@ -138,14 +153,70 @@ class LetterExplosion {
     element.style.top = `${newPosition.top}px`;
     element.style.left = `${newPosition.left}px`;
 
-    // Add a slight rotation for extra flair
-    const randomRotation = (Math.random() - 0.5) * 10; // -5 to 5 degrees
-    element.style.transform = `rotate(${randomRotation}deg)`;
+    // Randomly choose layout orientation
+    const orientationChoice = Math.random();
+    let elementTransform = "";
+
+    if (orientationChoice < 0.3) {
+      // 30% chance: Vertical layout (letters stacked)
+      this.applyVerticalLayout(element);
+      const randomRotation = (Math.random() - 0.5) * 20; // -10 to 10 degrees
+      elementTransform = `rotate(${randomRotation}deg)`;
+    } else if (orientationChoice < 0.5) {
+      // 20% chance: Diagonal layout
+      this.applyDiagonalLayout(element);
+      const randomRotation = 30 + (Math.random() - 0.5) * 60; // 0 to 60 degrees
+      elementTransform = `rotate(${randomRotation}deg)`;
+    } else if (orientationChoice < 0.7) {
+      // 20% chance: Steep angle
+      const steepAngle = 60 + Math.random() * 60; // 60 to 120 degrees
+      elementTransform = `rotate(${steepAngle}deg)`;
+    } else if (orientationChoice < 0.85) {
+      // 15% chance: Upside down
+      const upsideAngle = 150 + Math.random() * 60; // 150 to 210 degrees
+      elementTransform = `rotate(${upsideAngle}deg)`;
+    } else {
+      // 15% chance: Slight angle (normal-ish)
+      const randomRotation = (Math.random() - 0.5) * 30; // -15 to 15 degrees
+      elementTransform = `rotate(${randomRotation}deg)`;
+    }
+
+    element.style.transform = elementTransform;
 
     // Remove repositioning class after animation completes
     setTimeout(() => {
       element.classList.remove("repositioning");
     }, 1500);
+  }
+
+  applyVerticalLayout(element) {
+    const letters = element.querySelectorAll(".letter");
+    letters.forEach((letter, index) => {
+      // Stack letters vertically with slight random offset
+      const verticalOffset = index * (20 + Math.random() * 10); // 20-30px spacing
+      const horizontalJitter = (Math.random() - 0.5) * 10; // -5 to 5px horizontal variation
+
+      letter.style.position = "relative";
+      letter.style.display = "block";
+      letter.style.top = `${verticalOffset}px`;
+      letter.style.left = `${horizontalJitter}px`;
+      letter.style.lineHeight = "1";
+    });
+  }
+
+  applyDiagonalLayout(element) {
+    const letters = element.querySelectorAll(".letter");
+    letters.forEach((letter, index) => {
+      // Arrange letters diagonally
+      const diagonalOffset = index * (15 + Math.random() * 8); // 15-23px spacing
+      const verticalOffset = index * (12 + Math.random() * 6); // 12-18px vertical
+      const jitter = (Math.random() - 0.5) * 8; // Random jitter
+
+      letter.style.position = "relative";
+      letter.style.display = "inline-block";
+      letter.style.left = `${diagonalOffset + jitter}px`;
+      letter.style.top = `${verticalOffset + jitter}px`;
+    });
   }
 
   calculateRandomPosition(element) {
