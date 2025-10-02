@@ -25,6 +25,31 @@ body {
   }
 }
 
+/* iPad-specific optimizations */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  html {
+    height: 100%;
+    width: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    height: 100vh !important;
+    width: 100vw !important;
+    min-height: 100vh !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+}
+
 /* Wild background animations - now handled by JavaScript for mobile compatibility */
 body.wild-colors {
   /* Animation now handled by JavaScript for smoother mobile performance */

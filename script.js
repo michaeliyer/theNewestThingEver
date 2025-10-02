@@ -554,6 +554,10 @@ class BackgroundEffects {
   }
 
   animateBackgroundColorSmooth(finalColor) {
+    // Detect iPad for optimized settings
+    const isIPad =
+      /iPad|Macintosh/.test(navigator.userAgent) && "ontouchend" in document;
+
     // Create color sequence for smooth transition
     const colorSequence = [
       "#ff6b6b",
@@ -585,27 +589,54 @@ class BackgroundEffects {
 
     let currentStep = 0;
     const totalSteps = colorSequence.length;
-    const stepDuration = 3000 / totalSteps; // 3 seconds total
+
+    // iPad-specific optimizations
+    const stepDuration = isIPad ? 3000 / (totalSteps * 0.8) : 3000 / totalSteps; // Slower on iPad
+    const transitionType = isIPad ? "ease" : "ease-out"; // Simpler easing on iPad
+
+    // Force repaint on iPad before starting
+    if (isIPad) {
+      document.body.style.transform = "translateZ(0)";
+      document.body.offsetHeight; // Force reflow
+    }
 
     const colorInterval = setInterval(() => {
       if (currentStep >= totalSteps) {
         clearInterval(colorInterval);
-        // Ensure final color is set
-        document.body.style.backgroundColor = finalColor;
+        // Ensure final color is set with iPad-specific handling
+        if (isIPad) {
+          requestAnimationFrame(() => {
+            document.body.style.backgroundColor = finalColor;
+          });
+        } else {
+          document.body.style.backgroundColor = finalColor;
+        }
         return;
       }
 
-      // Smooth transition to next color
-      document.body.style.transition = `background-color ${stepDuration}ms ease-out`;
-      document.body.style.backgroundColor = colorSequence[currentStep];
+      // iPad-optimized transition
+      if (isIPad) {
+        requestAnimationFrame(() => {
+          document.body.style.transition = `background-color ${stepDuration}ms ${transitionType}`;
+          document.body.style.backgroundColor = colorSequence[currentStep];
+        });
+      } else {
+        document.body.style.transition = `background-color ${stepDuration}ms ${transitionType}`;
+        document.body.style.backgroundColor = colorSequence[currentStep];
+      }
 
       currentStep++;
     }, stepDuration);
 
     // Clean up transition after animation
+    const cleanupDelay = isIPad ? 3500 : 3000; // Extra time for iPad
     setTimeout(() => {
       document.body.style.transition = "all 0.3s ease";
-    }, 3000);
+      if (isIPad) {
+        // Reset transform on iPad
+        document.body.style.transform = "";
+      }
+    }, cleanupDelay);
   }
 
   generateRandomEndColor() {
