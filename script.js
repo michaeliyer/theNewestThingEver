@@ -534,11 +534,8 @@ class BackgroundEffects {
     const randomEndColor = this.generateRandomEndColor();
     console.log("Animation will end with color:", randomEndColor);
 
-    // Set the random end color as a CSS custom property
-    document.body.style.setProperty("--random-end-color", randomEndColor);
-
-    // Add wild colors animation
-    document.body.classList.add("wild-colors");
+    // Use smooth color transition instead of CSS animation for mobile compatibility
+    this.animateBackgroundColorSmooth(randomEndColor);
 
     // Create floating particles from click point
     this.createBackgroundParticles(event.clientX, event.clientY);
@@ -546,15 +543,68 @@ class BackgroundEffects {
     // Create screen flash effect
     this.createScreenFlash();
 
-    // Remove animation class after completion and set the new background
+    // Complete animation
     setTimeout(() => {
-      document.body.classList.remove("wild-colors");
-      document.body.style.backgroundColor = randomEndColor;
       this.isAnimating = false;
       console.log(
         "Wild colors animation completed! New background:",
         randomEndColor
       );
+    }, 3000);
+  }
+
+  animateBackgroundColorSmooth(finalColor) {
+    // Create color sequence for smooth transition
+    const colorSequence = [
+      "#ff6b6b",
+      "#4ecdc4",
+      "#45b7d1",
+      "#ff9ff3",
+      "#54a0ff",
+      "#5f27cd",
+      "#ff6348",
+      "#2ed573",
+      "#3742fa",
+      "#f368e0",
+      "#ffa502",
+      "#ff4757",
+      "#2ecc71",
+      "#3498db",
+      "#9b59b6",
+      "#ff3838",
+      "#f39c12",
+      "#e74c3c",
+      "#1abc9c",
+      "#3498db",
+      "#9b59b6",
+      "#e67e22",
+      "#e74c3c",
+      "#8e44ad",
+      finalColor,
+    ];
+
+    let currentStep = 0;
+    const totalSteps = colorSequence.length;
+    const stepDuration = 3000 / totalSteps; // 3 seconds total
+
+    const colorInterval = setInterval(() => {
+      if (currentStep >= totalSteps) {
+        clearInterval(colorInterval);
+        // Ensure final color is set
+        document.body.style.backgroundColor = finalColor;
+        return;
+      }
+
+      // Smooth transition to next color
+      document.body.style.transition = `background-color ${stepDuration}ms ease-out`;
+      document.body.style.backgroundColor = colorSequence[currentStep];
+
+      currentStep++;
+    }, stepDuration);
+
+    // Clean up transition after animation
+    setTimeout(() => {
+      document.body.style.transition = "all 0.3s ease";
     }, 3000);
   }
 
